@@ -1,4 +1,4 @@
-function CartDrawer() {
+function CartDrawer({ onConfirm }) {
   return (
     <aside
       className="h-fit rounded-xl bg-white p-6"
@@ -89,6 +89,7 @@ function CartDrawer() {
       <button
         type="button"
         className="w-full rounded-full bg-orange-700 px-6 py-4 font-semibold text-white transition-colors hover:bg-orange-800"
+        onClick={onConfirm}
       >
         Confirm Order
       </button>
