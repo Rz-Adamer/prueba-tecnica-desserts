@@ -5,7 +5,7 @@ import ProductCard from './components/ProductCard'
 import { products } from './data/products'
 
 function App() {
-  const [isOrderConfirmed, setIsOrderConfirmed] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
     <>
@@ -31,12 +31,12 @@ function App() {
             </div>
           </section>
 
-          <CartDrawer onConfirm={() => setIsOrderConfirmed(true)} />
+          <CartDrawer onConfirm={() => setIsModalOpen(true)} />
         </div>
       </main>
 
-      {isOrderConfirmed && (
-        <ConfirmOrderModal onClose={() => setIsOrderConfirmed(false)} />
+      {isModalOpen && (
+        <ConfirmOrderModal onClose={() => setIsModalOpen(false)} />
       )}
     </>
   )
