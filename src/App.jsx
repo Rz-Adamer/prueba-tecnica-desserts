@@ -1,3 +1,4 @@
+import CartDrawer from './components/CartDrawer'
 import ProductCard from './components/ProductCard'
 import { products } from './data/products'
 
@@ -25,16 +26,7 @@ function App() {
           </div>
         </section>
 
-        <aside className="h-fit rounded-xl bg-white p-6" aria-labelledby="cart-title">
-          <h2 id="cart-title" className="text-2xl font-bold text-orange-700">
-            Your Cart (0)
-          </h2>
-          <div className="flex min-h-52 items-center justify-center text-center">
-            <p className="font-semibold text-stone-500">
-              Your added items will appear here
-            </p>
-          </div>
-        </aside>
+        <CartDrawer />
       </div>
     </main>
   )
