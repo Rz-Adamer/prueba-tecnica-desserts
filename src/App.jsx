@@ -1,3 +1,4 @@
+import ProductCard from './components/ProductCard'
 import { products } from './data/products'
 
 function App() {
@@ -11,20 +12,13 @@ function App() {
 
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {products.map((product) => (
-              <article key={product.id}>
-                <img
-                  className="aspect-square w-full rounded-lg object-cover"
-                  src={product.image}
-                  alt={product.name}
-                />
-                <div className="pt-4">
-                  <p className="text-sm text-stone-500">{product.category}</p>
-                  <h2 className="font-semibold">{product.name}</h2>
-                  <p className="font-semibold text-orange-700">
-                    ${product.price.toFixed(2)}
-                  </p>
-                </div>
-              </article>
+              <ProductCard
+                key={product.id}
+                image={product.image}
+                category={product.category}
+                name={product.name}
+                price={product.price}
+              />
             ))}
           </div>
         </section>
