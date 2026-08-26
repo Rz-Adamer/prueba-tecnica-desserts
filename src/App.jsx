@@ -18,6 +18,8 @@ function App() {
                 category={product.category}
                 name={product.name}
                 price={product.price}
+                isSelected={product.id === 2}
+                quantity={4}
               />
             ))}
           </div>
