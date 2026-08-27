@@ -2,7 +2,9 @@ import { useState } from 'react'
 import CartDrawer from '../components/CartDrawer'
 import ConfirmOrderModal from '../components/ConfirmOrderModal'
 import ProductCard from '../components/ProductCard'
-import { products } from '../data/products'
+import database from '../../db.json'
+
+const { products } = database
 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
