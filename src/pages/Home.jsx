@@ -4,6 +4,7 @@ import axios from 'axios'
 import CartDrawer from '../components/CartDrawer'
 import ConfirmOrderModal from '../components/ConfirmOrderModal'
 import ProductCard from '../components/ProductCard'
+import ProductSkeleton from '../components/ProductSkeleton'
 
 async function getProducts() {
   const response = await axios.get('http://localhost:3000/products')
@@ -34,7 +35,14 @@ function Home() {
             </h1>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {isLoading && <p>Cargando...</p>}
+              {isLoading && (
+                <>
+                  <span className="sr-only">Cargando productos...</span>
+                  {Array.from({ length: 6 }, (_, index) => (
+                    <ProductSkeleton key={index} />
+                  ))}
+                </>
+              )}
 
               {isError && <p>Error al cargar</p>}
 
