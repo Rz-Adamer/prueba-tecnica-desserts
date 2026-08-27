@@ -1,13 +1,28 @@
 import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import CartDrawer from '../components/CartDrawer'
 import ConfirmOrderModal from '../components/ConfirmOrderModal'
 import ProductCard from '../components/ProductCard'
-import database from '../../db.json'
 
-const { products } = database
+async function getProducts() {
+  const response = await axios.get('http://localhost:3000/products')
+
+  await new Promise((resolve) => setTimeout(resolve, 1200))
+
+  return response.data
+}
 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts,
+  })
 
   return (
     <>
@@ -19,17 +34,23 @@ function Home() {
             </h1>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  image={product.image}
-                  category={product.category}
-                  name={product.name}
-                  price={product.price}
-                  isSelected={product.id === 2}
-                  quantity={4}
-                />
-              ))}
+              {isLoading && <p>Cargando...</p>}
+
+              {isError && <p>Error al cargar</p>}
+
+              {!isLoading &&
+                !isError &&
+                products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    image={product.image}
+                    category={product.category}
+                    name={product.name}
+                    price={product.price}
+                    isSelected={Number(product.id) === 2}
+                    quantity={4}
+                  />
+                ))}
             </div>
           </section>
 
