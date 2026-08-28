@@ -6,8 +6,25 @@ import ConfirmOrderModal from '../components/ConfirmOrderModal'
 import ProductCard from '../components/ProductCard'
 import ProductSkeleton from '../components/ProductSkeleton'
 
-async function getProducts() {
-  const response = await axios.get('http://localhost:3000/products')
+const categories = [
+  'Waffle',
+  'Crème Brûlée',
+  'Macaron',
+  'Tiramisu',
+  'Baklava',
+  'Pie',
+  'Cake',
+  'Brownie',
+  'Panna Cotta',
+]
+
+async function getProducts({ search, category }) {
+  const response = await axios.get('http://localhost:3000/products', {
+    params: {
+      'name:contains': search.trim() || undefined,
+      category: category || undefined,
+    },
+  })
 
   await new Promise((resolve) => setTimeout(resolve, 1200))
 
@@ -16,13 +33,15 @@ async function getProducts() {
 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const [category, setCategory] = useState('')
   const {
     data: products = [],
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['products'],
-    queryFn: getProducts,
+    queryKey: ['products', search, category],
+    queryFn: () => getProducts({ search, category }),
   })
 
   return (
@@ -34,6 +53,41 @@ function Home() {
               Desserts
             </h1>
 
+            <div className="mb-8 flex flex-col gap-4 sm:flex-row">
+              <div className="flex-1">
+                <label className="sr-only" htmlFor="product-search">
+                  Buscar por nombre
+                </label>
+                <input
+                  id="product-search"
+                  type="search"
+                  className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 outline-none transition-colors placeholder:text-stone-400 focus:border-orange-700"
+                  placeholder="Buscar postres por nombre..."
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="sr-only" htmlFor="category-filter">
+                  Filtrar por categoría
+                </label>
+                <select
+                  id="category-filter"
+                  className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 outline-none transition-colors focus:border-orange-700 sm:w-52"
+                  value={category}
+                  onChange={(event) => setCategory(event.target.value)}
+                >
+                  <option value="">Todas las categorías</option>
+                  {categories.map((categoryOption) => (
+                    <option key={categoryOption} value={categoryOption}>
+                      {categoryOption}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {isLoading && (
                 <>
@@ -44,7 +98,13 @@ function Home() {
                 </>
               )}
 
-              {isError && <p>Error al cargar</p>}
+              {isError && <p className="md:col-span-3">Error al cargar</p>}
+
+              {!isLoading && !isError && products.length === 0 && (
+                <p className="rounded-lg bg-white p-8 text-center text-stone-600 md:col-span-3">
+                  No encontramos postres que coincidan con tu búsqueda.
+                </p>
+              )}
 
               {!isLoading &&
                 !isError &&
