@@ -99,8 +99,6 @@ function Home() {
                     category={product.category}
                     name={product.name}
                     price={product.price}
-                    isSelected={Number(product.id) === 2}
-                    quantity={4}
                   />
                 ))}
             </div>

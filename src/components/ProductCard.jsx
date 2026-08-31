@@ -1,7 +1,18 @@
 import { Link } from 'react-router-dom'
+import useCartStore from '../stores/useCartStore'
 import QuantityStepper from './QuantityStepper'
 
-function ProductCard({ id, image, category, name, price, isSelected = false, quantity = 1 }) {
+function ProductCard({ id, image, category, name, price }) {
+  const cartItem = useCartStore((state) =>
+    state.items.find((item) => String(item.id) === String(id)),
+  )
+  const addProduct = useCartStore((state) => state.addProduct)
+  const increaseQuantity = useCartStore((state) => state.increaseQuantity)
+  const decreaseQuantity = useCartStore((state) => state.decreaseQuantity)
+  const isSelected = Boolean(cartItem)
+  const quantity = cartItem?.quantity ?? 0
+  const product = { id, image, category, name, price }
+
   return (
     <article>
       <div className="relative mb-6">
@@ -19,7 +30,13 @@ function ProductCard({ id, image, category, name, price, isSelected = false, qua
           />
         </Link>
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-          <QuantityStepper isSelected={isSelected} quantity={quantity} />
+          <QuantityStepper
+            isSelected={isSelected}
+            quantity={quantity}
+            onAdd={() => addProduct(product)}
+            onDecrease={() => decreaseQuantity(id)}
+            onIncrease={() => increaseQuantity(id)}
+          />
         </div>
       </div>
 
