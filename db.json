@@ -3,65 +3,76 @@
     {
       "id": 1,
       "name": "Waffle with Berries",
-      "category": "Waffle",
+      "categoryId": 1,
       "price": 6.5,
       "image": "https://irepo.primecp.com/2015/06/223306/Belgian-Berry-Waffles_Large600_ID-1029281.jpg?v=1029281"
     },
     {
       "id": 2,
       "name": "Vanilla Bean Crème Brûlée",
-      "category": "Crème Brûlée",
+      "categoryId": 2,
       "price": 7,
       "image": "https://popmenucloud.com/cdn-cgi/image/width%3D600%2Cheight%3D600%2Cfit%3Dscale-down%2Cformat%3Dauto%2Cquality%3D60/samhoxuf/20fe9d57-e0f0-40de-898d-f21f4c1616a3.jpeg"
     },
     {
       "id": 3,
       "name": "Macaron Mix of Five",
-      "category": "Macaron",
+      "categoryId": 3,
       "price": 8,
       "image": "https://www.sefcozeelandia.gr/en/recipes/zacharoplastiki/glaso-kigies-mpezedes/macaron-mix/macaron/@@images/image-600-e68468510186bcdfa62f720bda371c4d.jpeg"
     },
     {
       "id": 4,
       "name": "Classic Tiramisu",
-      "category": "Tiramisu",
+      "categoryId": 4,
       "price": 5.5,
       "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmvBAme4gU4JOw4ASqPxAmSw0CJ5-Zp8jh2uLyYNTQkTusMfmHi5wllYQ&s=10"
     },
     {
       "id": 5,
       "name": "Pistachio Baklava",
-      "category": "Baklava",
+      "categoryId": 5,
       "price": 4,
       "image": "https://shop.woodlandfoods.com/img/WF_Images/n16-pistachio-baklava-1.jpg"
     },
     {
       "id": 6,
       "name": "Lemon Meringue Pie",
-      "category": "Pie",
+      "categoryId": 6,
       "price": 5,
       "image": "https://www.shugarysweets.com/wp-content/uploads/2020/05/lemon-meringue-pie-5-600x400.jpg"
     },
     {
       "id": 7,
       "name": "Red Velvet Cake",
-      "category": "Cake",
+      "categoryId": 7,
       "price": 4.5,
       "image": "https://i.pinimg.com/736x/10/02/13/100213a8b3c1b0807a888e7a9379b547.jpg"
     },
     {
       "id": 8,
       "name": "Salted Caramel Brownie",
-      "category": "Brownie",
+      "categoryId": 8,
       "price": 4.5,
       "image": "https://static01.nyt.com/images/2016/06/07/dining/salted-caramel-brownie-2/salted-caramel-brownie-2-articleLarge.jpg"
     },
     {
       "id": 9,
       "name": "Vanilla Panna Cotta",
-      "category": "Panna Cotta",
+      "categoryId": 9,
       "price": 6.5,
       "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8zpjxlb9V9zLxXum2qKCzJ95B-OyWAPSv7Tq96ltsEwNt7ljCDUKWBd9Z&s=10"
     }
+  ],
+  "categories": [
+    { "id": 1, "name": "Waffle" },
+    { "id": 2, "name": "Crème Brûlée" },
+    { "id": 3, "name": "Macaron" },
+    { "id": 4, "name": "Tiramisu" },
+    { "id": 5, "name": "Baklava" },
+    { "id": 6, "name": "Pie" },
+    { "id": 7, "name": "Cake" },
+    { "id": 8, "name": "Brownie" },
+    { "id": 9, "name": "Panna Cotta" }
   ]
 }

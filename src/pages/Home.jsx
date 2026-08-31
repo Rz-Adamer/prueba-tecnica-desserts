@@ -3,29 +3,39 @@ import CartDrawer from '../components/CartDrawer'
 import ConfirmOrderModal from '../components/ConfirmOrderModal'
 import ProductCard from '../components/ProductCard'
 import ProductSkeleton from '../components/ProductSkeleton'
+import useCategories from '../hooks/useCategories'
 import useProducts from '../hooks/useProducts'
-
-const categories = [
-  'Waffle',
-  'Crème Brûlée',
-  'Macaron',
-  'Tiramisu',
-  'Baklava',
-  'Pie',
-  'Cake',
-  'Brownie',
-  'Panna Cotta',
-]
 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
+  const [page, setPage] = useState(1)
   const {
     products,
+    totalPages,
     isLoading,
     isError,
-  } = useProducts(search, category)
+  } = useProducts(search, category, page)
+  const {
+    categories,
+    isLoading: isCategoriesLoading,
+    isError: isCategoriesError,
+  } = useCategories()
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value)
+    setPage(1)
+  }
+
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value)
+    setPage(1)
+  }
+
+  const getCategoryName = (categoryId) =>
+    categories.find((item) => String(item.id) === String(categoryId))?.name ??
+    'Sin categoría'
 
   return (
     <>
@@ -47,7 +57,7 @@ function Home() {
                   className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 outline-none transition-colors placeholder:text-stone-400 focus:border-orange-700"
                   placeholder="Buscar postres por nombre..."
                   value={search}
-                  onChange={(event) => setSearch(event.target.value)}
+                  onChange={handleSearchChange}
                 />
               </div>
 
@@ -59,12 +69,19 @@ function Home() {
                   id="category-filter"
                   className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 outline-none transition-colors focus:border-orange-700 sm:w-52"
                   value={category}
-                  onChange={(event) => setCategory(event.target.value)}
+                  onChange={handleCategoryChange}
+                  disabled={isCategoriesLoading || isCategoriesError}
                 >
-                  <option value="">Todas las categorías</option>
+                  <option value="">
+                    {isCategoriesLoading
+                      ? 'Cargando categorías...'
+                      : isCategoriesError
+                        ? 'Categorías no disponibles'
+                        : 'Todas las categorías'}
+                  </option>
                   {categories.map((categoryOption) => (
-                    <option key={categoryOption} value={categoryOption}>
-                      {categoryOption}
+                    <option key={categoryOption.id} value={categoryOption.id}>
+                      {categoryOption.name}
                     </option>
                   ))}
                 </select>
@@ -96,12 +113,41 @@ function Home() {
                     key={product.id}
                     id={product.id}
                     image={product.image}
-                    category={product.category}
+                    category={getCategoryName(product.categoryId)}
                     name={product.name}
                     price={product.price}
                   />
                 ))}
             </div>
+
+            {!isLoading && !isError && products.length > 0 && (
+              <nav
+                className="mt-10 flex items-center justify-center gap-4"
+                aria-label="Paginación de productos"
+              >
+                <button
+                  type="button"
+                  className="rounded-full border border-orange-700 px-5 py-2 font-semibold text-orange-700 transition-colors hover:bg-orange-700 hover:text-white disabled:cursor-not-allowed disabled:border-stone-300 disabled:text-stone-400 disabled:hover:bg-transparent"
+                  disabled={page === 1}
+                  onClick={() => setPage((currentPage) => currentPage - 1)}
+                >
+                  Anterior
+                </button>
+
+                <span className="text-sm font-semibold text-stone-700">
+                  Página {page} de {totalPages}
+                </span>
+
+                <button
+                  type="button"
+                  className="rounded-full border border-orange-700 px-5 py-2 font-semibold text-orange-700 transition-colors hover:bg-orange-700 hover:text-white disabled:cursor-not-allowed disabled:border-stone-300 disabled:text-stone-400 disabled:hover:bg-transparent"
+                  disabled={page === totalPages}
+                  onClick={() => setPage((currentPage) => currentPage + 1)}
+                >
+                  Siguiente
+                </button>
+              </nav>
+            )}
           </section>
 
           <CartDrawer onConfirm={() => setIsModalOpen(true)} />

@@ -41,8 +41,10 @@ function ProductCard({ id, image, category, name, price }) {
       </div>
 
       <div>
-        <p className="text-sm text-stone-500">{category}</p>
-        <h2 className="text-base font-semibold text-stone-900">{name}</h2>
+        <span className="inline-flex rounded-full bg-orange-100 px-2.5 py-1 text-xs font-semibold text-orange-800">
+          {category}
+        </span>
+        <h2 className="mt-2 text-base font-semibold text-stone-900">{name}</h2>
         <p className="font-semibold text-orange-700">${price.toFixed(2)}</p>
       </div>
     </article>
