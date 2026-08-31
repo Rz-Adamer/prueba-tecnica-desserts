@@ -1,14 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
-
-async function getProduct(id) {
-  await new Promise((resolve) => setTimeout(resolve, 1200))
-
-  const response = await axios.get(`http://localhost:3000/products/${id}`)
-
-  return response.data
-}
+import useProduct from '../hooks/useProduct'
 
 function ProductDetailSkeleton() {
   return (
@@ -27,17 +18,11 @@ function ProductDetailSkeleton() {
 function ProductDetail() {
   const { id } = useParams()
   const {
-    data: product,
+    product,
     isLoading,
     isError,
-    error,
-  } = useQuery({
-    queryKey: ['product', id],
-    queryFn: () => getProduct(id),
-    retry: false,
-  })
-
-  const isNotFound = axios.isAxiosError(error) && error.response?.status === 404
+    isNotFound,
+  } = useProduct(id)
 
   if (isNotFound) {
     return (
