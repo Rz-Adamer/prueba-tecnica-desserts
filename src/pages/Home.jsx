@@ -1,10 +1,9 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import CartDrawer from '../components/CartDrawer'
 import ConfirmOrderModal from '../components/ConfirmOrderModal'
 import ProductCard from '../components/ProductCard'
 import ProductSkeleton from '../components/ProductSkeleton'
+import useProducts from '../hooks/useProducts'
 
 const categories = [
   'Waffle',
@@ -18,31 +17,15 @@ const categories = [
   'Panna Cotta',
 ]
 
-async function getProducts({ search, category }) {
-  const response = await axios.get('http://localhost:3000/products', {
-    params: {
-      'name:contains': search.trim() || undefined,
-      category: category || undefined,
-    },
-  })
-
-  await new Promise((resolve) => setTimeout(resolve, 1200))
-
-  return response.data
-}
-
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
   const {
-    data: products = [],
+    products,
     isLoading,
     isError,
-  } = useQuery({
-    queryKey: ['products', search, category],
-    queryFn: () => getProducts({ search, category }),
-  })
+  } = useProducts(search, category)
 
   return (
     <>
