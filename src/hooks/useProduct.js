@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import { getProductById } from '../api/productsApi'
+import {
+  getProductById,
+  isProductNotFoundError,
+} from '../services/products.service'
 
 function useProduct(id) {
   const query = useQuery({
@@ -9,8 +11,7 @@ function useProduct(id) {
     retry: false,
   })
 
-  const isNotFound =
-    axios.isAxiosError(query.error) && query.error.response?.status === 404
+  const isNotFound = isProductNotFoundError(query.error)
 
   return {
     ...query,
