@@ -3,6 +3,7 @@ import apiClient from './apiClient'
 
 /** @typedef {import('../interfaces/product').Product} Product */
 /** @typedef {import('../interfaces/product').ProductFilters} ProductFilters */
+/** @typedef {import('../interfaces/product').PaginatedProducts} PaginatedProducts */
 
 const ARTIFICIAL_DELAY = 1200
 
@@ -12,13 +13,15 @@ function delay(milliseconds = ARTIFICIAL_DELAY) {
 
 /**
  * @param {ProductFilters} filters
- * @returns {Promise<Product[]>}
+ * @returns {Promise<PaginatedProducts>}
  */
-export async function getProducts({ search, category }) {
+export async function getProducts({ search, category, page }) {
   const response = await apiClient.get('/products', {
     params: {
+      _page: page,
+      _per_page: 8,
       'name:contains': search.trim() || undefined,
-      category: category || undefined,
+      categoryId: category || undefined,
     },
   })
 
