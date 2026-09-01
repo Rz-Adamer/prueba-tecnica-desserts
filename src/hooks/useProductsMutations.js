@@ -1,33 +1,58 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import {
   createProduct,
   deleteProduct,
   updateProduct,
 } from '../services/products.service'
 
+const TOAST_DURATION = 5000
+
+const showTimedToast = (message, type = 'success') => {
+  const toastId = toast[type](message, { duration: Infinity })
+
+  window.setTimeout(() => {
+    toast.dismiss(toastId)
+  }, TOAST_DURATION)
+}
+
 function useProductsMutations() {
   const queryClient = useQueryClient()
-  const invalidateProducts = () =>
-    queryClient.invalidateQueries({ queryKey: ['products'] })
+  const invalidateProducts = () => {
+    void queryClient.invalidateQueries({ queryKey: ['products'] })
+  }
+  const notifyMutationError = () =>
+    showTimedToast(
+      'No se pudo completar la operación. Inténtalo nuevamente.',
+      'error',
+    )
 
   const createProductMutation = useMutation({
     mutationFn: createProduct,
-    onSuccess: invalidateProducts,
+    onSuccess: () => {
+      showTimedToast('Producto creado exitosamente')
+      invalidateProducts()
+    },
+    onError: notifyMutationError,
   })
 
   const updateProductMutation = useMutation({
     mutationFn: ({ id, product }) => updateProduct(id, product),
-    onSuccess: async (_updatedProduct, { id }) => {
-      await Promise.all([
-        invalidateProducts(),
-        queryClient.invalidateQueries({ queryKey: ['product', id] }),
-      ])
+    onSuccess: (_updatedProduct, { id }) => {
+      showTimedToast('Producto editado exitosamente')
+      invalidateProducts()
+      void queryClient.invalidateQueries({ queryKey: ['product', id] })
     },
+    onError: notifyMutationError,
   })
 
   const deleteProductMutation = useMutation({
     mutationFn: deleteProduct,
-    onSuccess: invalidateProducts,
+    onSuccess: () => {
+      showTimedToast('Producto eliminado exitosamente')
+      invalidateProducts()
+    },
+    onError: notifyMutationError,
   })
 
   return {
