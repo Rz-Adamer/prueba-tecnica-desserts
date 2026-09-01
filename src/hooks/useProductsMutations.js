@@ -17,7 +17,12 @@ function useProductsMutations() {
 
   const updateProductMutation = useMutation({
     mutationFn: ({ id, product }) => updateProduct(id, product),
-    onSuccess: invalidateProducts,
+    onSuccess: async (_updatedProduct, { id }) => {
+      await Promise.all([
+        invalidateProducts(),
+        queryClient.invalidateQueries({ queryKey: ['product', id] }),
+      ])
+    },
   })
 
   const deleteProductMutation = useMutation({

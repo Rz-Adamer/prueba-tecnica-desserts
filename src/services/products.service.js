@@ -1,5 +1,5 @@
 import axios from 'axios'
-import apiClient from './apiClient'
+import apiClient from './apiClient.js'
 
 /** @typedef {import('../interfaces/product').Product} Product */
 /** @typedef {import('../interfaces/product').ProductInput} ProductInput */
