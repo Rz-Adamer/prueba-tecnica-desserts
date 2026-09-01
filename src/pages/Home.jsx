@@ -17,6 +17,7 @@ function Home() {
     totalPages,
     isLoading,
     isError,
+    refetch,
   } = useProductsQuery(search, category, page)
   const {
     categories,
@@ -107,7 +108,23 @@ function Home() {
                 </>
               )}
 
-              {isError && <p className="md:col-span-3">Error al cargar</p>}
+              {isError && (
+                <div className="rounded-xl bg-white p-8 text-center md:col-span-3">
+                  <p className="font-semibold text-red-700">
+                    No pudimos cargar los productos.
+                  </p>
+                  <p className="mt-2 text-sm text-stone-500">
+                    Comprueba que la API local esté ejecutándose e inténtalo nuevamente.
+                  </p>
+                  <button
+                    type="button"
+                    className="mt-5 rounded-full bg-orange-700 px-5 py-2 font-semibold text-white hover:bg-orange-800"
+                    onClick={() => refetch()}
+                  >
+                    Reintentar
+                  </button>
+                </div>
+              )}
 
               {!isLoading && !isError && products.length === 0 && (
                 <p className="rounded-lg bg-white p-8 text-center text-stone-600 md:col-span-3">
