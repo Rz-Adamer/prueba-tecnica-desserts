@@ -1,20 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import {
   createProduct,
   deleteProduct,
   updateProduct,
 } from '../services/products.service'
 
-const TOAST_DURATION = 5000
+const TOAST_DURATION = 6000
 
-const showTimedToast = (message, type = 'success') => {
-  const toastId = toast[type](message, { duration: Infinity })
-
-  window.setTimeout(() => {
-    toast.dismiss(toastId)
-  }, TOAST_DURATION)
-}
+const showTimedToast = (message, type = 'success') =>
+  toast[type](message, { duration: TOAST_DURATION })
 
 function useProductsMutations() {
   const queryClient = useQueryClient()
