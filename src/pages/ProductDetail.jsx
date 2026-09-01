@@ -1,14 +1,6 @@
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
-
-async function getProduct(id) {
-  await new Promise((resolve) => setTimeout(resolve, 1200))
-
-  const response = await axios.get(`http://localhost:3000/products/${id}`)
-
-  return response.data
-}
+import useCategories from '../hooks/useCategories'
+import { useProductQuery } from '../hooks/useProductsQueries'
 
 function ProductDetailSkeleton() {
   return (
@@ -27,17 +19,15 @@ function ProductDetailSkeleton() {
 function ProductDetail() {
   const { id } = useParams()
   const {
-    data: product,
+    product,
     isLoading,
     isError,
-    error,
-  } = useQuery({
-    queryKey: ['product', id],
-    queryFn: () => getProduct(id),
-    retry: false,
-  })
-
-  const isNotFound = axios.isAxiosError(error) && error.response?.status === 404
+    isNotFound,
+  } = useProductQuery(id)
+  const { categories } = useCategories()
+  const categoryName =
+    categories.find((category) => String(category.id) === String(product?.categoryId))
+      ?.name ?? 'Sin categoría'
 
   if (isNotFound) {
     return (
@@ -96,7 +86,9 @@ function ProductDetail() {
             />
 
             <div className="flex flex-col justify-center">
-              <p className="text-sm text-stone-500">{product.category}</p>
+              <span className="w-fit rounded-full bg-orange-100 px-3 py-1 text-sm font-semibold text-orange-800">
+                {categoryName}
+              </span>
               <h1 className="mt-2 text-4xl font-bold">{product.name}</h1>
               <p className="mt-4 text-2xl font-bold text-orange-700">
                 ${product.price.toFixed(2)}

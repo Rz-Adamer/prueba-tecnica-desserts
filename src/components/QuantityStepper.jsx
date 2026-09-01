@@ -1,9 +1,16 @@
-function QuantityStepper({ isSelected = false, quantity = 1 }) {
+function QuantityStepper({
+  isSelected = false,
+  quantity = 1,
+  onAdd,
+  onDecrease,
+  onIncrease,
+}) {
   if (!isSelected) {
     return (
       <button
         type="button"
         className="flex w-40 items-center justify-center gap-2 rounded-full border border-stone-400 bg-white px-4 py-3 text-sm font-semibold text-stone-900 transition-colors hover:border-orange-700 hover:text-orange-700"
+        onClick={onAdd}
       >
         <svg
           className="size-5 text-orange-700"
@@ -28,6 +35,7 @@ function QuantityStepper({ isSelected = false, quantity = 1 }) {
         type="button"
         className="flex size-5 items-center justify-center rounded-full border border-white transition-colors hover:bg-white hover:text-orange-700"
         aria-label="Decrease quantity"
+        onClick={onDecrease}
       >
         <span aria-hidden="true">−</span>
       </button>
@@ -40,6 +48,7 @@ function QuantityStepper({ isSelected = false, quantity = 1 }) {
         type="button"
         className="flex size-5 items-center justify-center rounded-full border border-white transition-colors hover:bg-white hover:text-orange-700"
         aria-label="Increase quantity"
+        onClick={onIncrease}
       >
         <span aria-hidden="true">+</span>
       </button>

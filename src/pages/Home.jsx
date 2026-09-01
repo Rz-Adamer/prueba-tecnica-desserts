@@ -1,57 +1,60 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import { Link } from 'react-router-dom'
 import CartDrawer from '../components/CartDrawer'
 import ConfirmOrderModal from '../components/ConfirmOrderModal'
 import ProductCard from '../components/ProductCard'
 import ProductSkeleton from '../components/ProductSkeleton'
-
-const categories = [
-  'Waffle',
-  'Crème Brûlée',
-  'Macaron',
-  'Tiramisu',
-  'Baklava',
-  'Pie',
-  'Cake',
-  'Brownie',
-  'Panna Cotta',
-]
-
-async function getProducts({ search, category }) {
-  const response = await axios.get('http://localhost:3000/products', {
-    params: {
-      'name:contains': search.trim() || undefined,
-      category: category || undefined,
-    },
-  })
-
-  await new Promise((resolve) => setTimeout(resolve, 1200))
-
-  return response.data
-}
+import useCategories from '../hooks/useCategories'
+import { useProductsQuery } from '../hooks/useProductsQueries'
 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
+  const [page, setPage] = useState(1)
   const {
-    data: products = [],
+    products,
+    totalPages,
     isLoading,
     isError,
-  } = useQuery({
-    queryKey: ['products', search, category],
-    queryFn: () => getProducts({ search, category }),
-  })
+    refetch,
+  } = useProductsQuery(search, category, page)
+  const {
+    categories,
+    isLoading: isCategoriesLoading,
+    isError: isCategoriesError,
+  } = useCategories()
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value)
+    setPage(1)
+  }
+
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value)
+    setPage(1)
+  }
+
+  const getCategoryName = (categoryId) =>
+    categories.find((item) => String(item.id) === String(categoryId))?.name ??
+    'Sin categoría'
 
   return (
     <>
       <main className="min-h-screen bg-rose-50 px-6 py-8 text-stone-900 sm:px-10 lg:px-16 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_24rem]">
           <section aria-labelledby="desserts-title">
-            <h1 id="desserts-title" className="mb-8 text-4xl font-bold">
-              Desserts
-            </h1>
+            <div className="mb-8 flex items-center justify-between gap-4">
+              <h1 id="desserts-title" className="text-4xl font-bold">
+                Desserts
+              </h1>
+              <Link
+                to="/admin/productos"
+                className="rounded-full border border-orange-700 px-4 py-2 text-sm font-semibold text-orange-700 hover:bg-orange-700 hover:text-white"
+              >
+                Administrar
+              </Link>
+            </div>
 
             <div className="mb-8 flex flex-col gap-4 sm:flex-row">
               <div className="flex-1">
@@ -64,7 +67,7 @@ function Home() {
                   className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 outline-none transition-colors placeholder:text-stone-400 focus:border-orange-700"
                   placeholder="Buscar postres por nombre..."
                   value={search}
-                  onChange={(event) => setSearch(event.target.value)}
+                  onChange={handleSearchChange}
                 />
               </div>
 
@@ -76,12 +79,19 @@ function Home() {
                   id="category-filter"
                   className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 outline-none transition-colors focus:border-orange-700 sm:w-52"
                   value={category}
-                  onChange={(event) => setCategory(event.target.value)}
+                  onChange={handleCategoryChange}
+                  disabled={isCategoriesLoading || isCategoriesError}
                 >
-                  <option value="">Todas las categorías</option>
+                  <option value="">
+                    {isCategoriesLoading
+                      ? 'Cargando categorías...'
+                      : isCategoriesError
+                        ? 'Categorías no disponibles'
+                        : 'Todas las categorías'}
+                  </option>
                   {categories.map((categoryOption) => (
-                    <option key={categoryOption} value={categoryOption}>
-                      {categoryOption}
+                    <option key={categoryOption.id} value={categoryOption.id}>
+                      {categoryOption.name}
                     </option>
                   ))}
                 </select>
@@ -98,7 +108,23 @@ function Home() {
                 </>
               )}
 
-              {isError && <p className="md:col-span-3">Error al cargar</p>}
+              {isError && (
+                <div className="rounded-xl bg-white p-8 text-center md:col-span-3">
+                  <p className="font-semibold text-red-700">
+                    No pudimos cargar los productos.
+                  </p>
+                  <p className="mt-2 text-sm text-stone-500">
+                    Comprueba que la API local esté ejecutándose e inténtalo nuevamente.
+                  </p>
+                  <button
+                    type="button"
+                    className="mt-5 rounded-full bg-orange-700 px-5 py-2 font-semibold text-white hover:bg-orange-800"
+                    onClick={() => refetch()}
+                  >
+                    Reintentar
+                  </button>
+                </div>
+              )}
 
               {!isLoading && !isError && products.length === 0 && (
                 <p className="rounded-lg bg-white p-8 text-center text-stone-600 md:col-span-3">
@@ -113,14 +139,41 @@ function Home() {
                     key={product.id}
                     id={product.id}
                     image={product.image}
-                    category={product.category}
+                    category={getCategoryName(product.categoryId)}
                     name={product.name}
                     price={product.price}
-                    isSelected={Number(product.id) === 2}
-                    quantity={4}
                   />
                 ))}
             </div>
+
+            {!isLoading && !isError && products.length > 0 && (
+              <nav
+                className="mt-10 flex items-center justify-center gap-4"
+                aria-label="Paginación de productos"
+              >
+                <button
+                  type="button"
+                  className="rounded-full border border-orange-700 px-5 py-2 font-semibold text-orange-700 transition-colors hover:bg-orange-700 hover:text-white disabled:cursor-not-allowed disabled:border-stone-300 disabled:text-stone-400 disabled:hover:bg-transparent"
+                  disabled={page === 1}
+                  onClick={() => setPage((currentPage) => currentPage - 1)}
+                >
+                  Anterior
+                </button>
+
+                <span className="text-sm font-semibold text-stone-700">
+                  Página {page} de {totalPages}
+                </span>
+
+                <button
+                  type="button"
+                  className="rounded-full border border-orange-700 px-5 py-2 font-semibold text-orange-700 transition-colors hover:bg-orange-700 hover:text-white disabled:cursor-not-allowed disabled:border-stone-300 disabled:text-stone-400 disabled:hover:bg-transparent"
+                  disabled={page === totalPages}
+                  onClick={() => setPage((currentPage) => currentPage + 1)}
+                >
+                  Siguiente
+                </button>
+              </nav>
+            )}
           </section>
 
           <CartDrawer onConfirm={() => setIsModalOpen(true)} />
