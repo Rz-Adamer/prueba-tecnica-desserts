@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import CartDrawer from '../components/CartDrawer'
 import ConfirmOrderModal from '../components/ConfirmOrderModal'
 import ProductCard from '../components/ProductCard'
@@ -42,9 +43,17 @@ function Home() {
       <main className="min-h-screen bg-rose-50 px-6 py-8 text-stone-900 sm:px-10 lg:px-16 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_24rem]">
           <section aria-labelledby="desserts-title">
-            <h1 id="desserts-title" className="mb-8 text-4xl font-bold">
-              Desserts
-            </h1>
+            <div className="mb-8 flex items-center justify-between gap-4">
+              <h1 id="desserts-title" className="text-4xl font-bold">
+                Desserts
+              </h1>
+              <Link
+                to="/admin/productos"
+                className="rounded-full border border-orange-700 px-4 py-2 text-sm font-semibold text-orange-700 hover:bg-orange-700 hover:text-white"
+              >
+                Administrar
+              </Link>
+            </div>
 
             <div className="mb-8 flex flex-col gap-4 sm:flex-row">
               <div className="flex-1">
