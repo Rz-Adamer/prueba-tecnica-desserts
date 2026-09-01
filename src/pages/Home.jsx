@@ -4,7 +4,7 @@ import ConfirmOrderModal from '../components/ConfirmOrderModal'
 import ProductCard from '../components/ProductCard'
 import ProductSkeleton from '../components/ProductSkeleton'
 import useCategories from '../hooks/useCategories'
-import useProducts from '../hooks/useProducts'
+import { useProductsQuery } from '../hooks/useProductsQueries'
 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -16,7 +16,7 @@ function Home() {
     totalPages,
     isLoading,
     isError,
-  } = useProducts(search, category, page)
+  } = useProductsQuery(search, category, page)
   const {
     categories,
     isLoading: isCategoriesLoading,

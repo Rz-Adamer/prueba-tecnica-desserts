@@ -6,6 +6,13 @@ export interface Product {
   image: string
 }
 
+export interface ProductInput {
+  name: string
+  categoryId: number
+  price: number
+  image: string
+}
+
 export interface ProductFilters {
   search: string
   category: string

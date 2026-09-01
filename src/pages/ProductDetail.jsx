@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import useCategories from '../hooks/useCategories'
-import useProduct from '../hooks/useProduct'
+import { useProductQuery } from '../hooks/useProductsQueries'
 
 function ProductDetailSkeleton() {
   return (
@@ -23,7 +23,7 @@ function ProductDetail() {
     isLoading,
     isError,
     isNotFound,
-  } = useProduct(id)
+  } = useProductQuery(id)
   const { categories } = useCategories()
   const categoryName =
     categories.find((category) => String(category.id) === String(product?.categoryId))
