@@ -2,6 +2,7 @@ import axios from 'axios'
 import apiClient from './apiClient'
 
 /** @typedef {import('../interfaces/product').Product} Product */
+/** @typedef {import('../interfaces/product').ProductInput} ProductInput */
 /** @typedef {import('../interfaces/product').ProductFilters} ProductFilters */
 /** @typedef {import('../interfaces/product').PaginatedProducts} PaginatedProducts */
 
@@ -40,6 +41,32 @@ export async function getProductById(id) {
   const response = await apiClient.get(`/products/${id}`)
 
   return response.data
+}
+
+/**
+ * @param {ProductInput} product
+ * @returns {Promise<Product>}
+ */
+export async function createProduct(product) {
+  const response = await apiClient.post('/products', product)
+
+  return response.data
+}
+
+/**
+ * @param {string} id
+ * @param {ProductInput} product
+ * @returns {Promise<Product>}
+ */
+export async function updateProduct(id, product) {
+  const response = await apiClient.put(`/products/${id}`, product)
+
+  return response.data
+}
+
+/** @param {string} id */
+export async function deleteProduct(id) {
+  await apiClient.delete(`/products/${id}`)
 }
 
 export function isProductNotFoundError(error) {
